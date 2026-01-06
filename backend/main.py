@@ -20,7 +20,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from config import get_settings
-from database import init_db
+from database import init_db, check_db_connection
 
 settings = get_settings()
 
@@ -31,9 +31,16 @@ async def lifespan(app: FastAPI):
     # Startup
     print("🚀 Starting QRSecure...")
     
-    # Initialize database
-    await init_db()
-    print("✅ Database initialized")
+    # Initialize database with proper error handling
+    try:
+        await init_db()
+        print("✅ Database initialized")
+    except Exception as e:
+        print(f"❌ CRITICAL: Database initialization failed!")
+        print(f"   Error: {e}")
+        print(f"   Type: {type(e).__name__}")
+        print("   App will continue but database features will not work.")
+        # Don't raise - let the app start so we can access debug endpoints
     
     # Create qr_codes directory if it doesn't exist
     qr_dir = os.path.join(os.path.dirname(__file__), "qr_codes")
@@ -108,10 +115,12 @@ app.include_router(debug_router)
 @app.get("/health", tags=["Health"])
 async def health_check():
     """Health check endpoint for monitoring."""
+    db_status = await check_db_connection()
     return {
-        "status": "healthy",
+        "status": "healthy" if db_status.get("status") == "connected" else "degraded",
         "version": "1.0.0",
-        "service": "QRSecure"
+        "service": "QRSecure",
+        "database": db_status
     }
 
 
