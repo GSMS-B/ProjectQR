@@ -44,7 +44,13 @@ async def redirect_url(
     # Log analytics (non-blocking)
     if url_data.analytics_enabled:
         try:
-            ip = request.client.host if request.client else "0.0.0.0"
+            # Get real IP from header (for Render/Proxies) or fallback to connection IP
+            forwarded = request.headers.get("x-forwarded-for")
+            if forwarded:
+                ip = forwarded.split(",")[0].strip()
+            else:
+                ip = request.client.host if request.client else "0.0.0.0"
+                
             user_agent = request.headers.get("user-agent", "")
             referrer = request.headers.get("referer")
             

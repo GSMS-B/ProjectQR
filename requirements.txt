@@ -34,3 +34,7 @@ python-dateutil
 
 # Geolocation
 geoip2
+
+# Database Drivers
+asyncpg
+greenlet

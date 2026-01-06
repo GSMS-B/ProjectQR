@@ -96,10 +96,12 @@ from routes.auth import router as auth_router
 from routes.qr import router as qr_router
 from routes.analytics import router as analytics_router
 from routes.redirect import router as redirect_router
+from routes.debug import router as debug_router
 
 app.include_router(auth_router)
 app.include_router(qr_router)
 app.include_router(analytics_router)
+app.include_router(debug_router)
 
 
 # Health check endpoint
