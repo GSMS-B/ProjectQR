@@ -4,8 +4,8 @@ Production-grade database connection handling for SQLite (local) and PostgreSQL 
 """
 
 import os
-import ssl
-from urllib.parse import urlparse, parse_qs, unquote
+import re
+from urllib.parse import quote
 
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy.orm import declarative_base
@@ -23,6 +23,9 @@ def prepare_database_url(raw_url: str) -> tuple[str, dict]:
     """
     Parse and prepare the database URL for SQLAlchemy asyncpg.
     
+    This function uses regex-based parsing instead of urlparse to avoid issues
+    with special characters in passwords (like brackets).
+    
     Returns:
         tuple: (processed_url, connect_args)
     """
@@ -33,26 +36,24 @@ def prepare_database_url(raw_url: str) -> tuple[str, dict]:
     
     # SQLite: no changes needed
     if raw_url.startswith("sqlite"):
+        print(f"🔌 Database: SQLite (local development)")
         return raw_url, connect_args
     
-    # PostgreSQL: needs driver prefix and SSL configuration
-    parsed = urlparse(raw_url)
+    # PostgreSQL URL pattern: scheme://user:password@host:port/database
+    # Using regex to handle special characters in password
+    pattern = r'^(postgres(?:ql)?(?:\+asyncpg)?):\/\/([^:]+):(.+)@([^:]+):(\d+)\/(.+?)(?:\?.*)?$'
+    match = re.match(pattern, raw_url)
     
-    # Determine the scheme
-    scheme = parsed.scheme
-    if scheme in ("postgres", "postgresql"):
-        scheme = "postgresql+asyncpg"
-    elif scheme == "postgresql+asyncpg":
-        pass  # Already correct
-    else:
-        raise ValueError(f"Unsupported database scheme: {scheme}")
+    if not match:
+        # Try simpler pattern without password
+        pattern_no_pass = r'^(postgres(?:ql)?(?:\+asyncpg)?):\/\/([^@]+)@([^:]+):(\d+)\/(.+?)(?:\?.*)?$'
+        match_no_pass = re.match(pattern_no_pass, raw_url)
+        if match_no_pass:
+            raise ValueError("DATABASE_URL appears to be missing a password")
+        raise ValueError(f"Invalid DATABASE_URL format. Expected: postgresql://user:password@host:port/database")
     
-    # Extract credentials (handle URL-encoded passwords)
-    username = unquote(parsed.username) if parsed.username else ""
-    password = unquote(parsed.password) if parsed.password else ""
-    host = parsed.hostname or ""
-    port = parsed.port or 5432
-    database = parsed.path.lstrip("/") if parsed.path else "postgres"
+    scheme, username, password, host, port, database = match.groups()
+    port = int(port)
     
     # Log connection info (masked) for debugging
     masked_password = "***" if password else "(empty)"
@@ -61,49 +62,50 @@ def prepare_database_url(raw_url: str) -> tuple[str, dict]:
     print(f"   Port: {port}")
     print(f"   Database: {database}")
     print(f"   Username: {username}")
-    print(f"   Password: {masked_password}")
+    print(f"   Password: {masked_password} (length: {len(password)})")
     
-    # Detect if using Supabase connection pooler
+    # Detect Supabase
     is_supabase_pooler = "pooler.supabase.com" in host
-    is_supabase_direct = "supabase.co" in host or "supabase.com" in host
+    is_supabase_direct = "supabase.co" in host
     
     if is_supabase_pooler:
-        print(f"   Mode: Supabase Connection Pooler (Session Mode)")
+        if port == 6543:
+            print(f"   Mode: Supabase Transaction Pooler (port 6543)")
+        elif port == 5432:
+            print(f"   Mode: Supabase Session Pooler (port 5432)")
+        else:
+            print(f"   Mode: Supabase Pooler (unknown port {port})")
+        
         # Connection pooler requires NullPool and no prepared statements
         connect_args["prepared_statement_cache_size"] = 0
         # SSL is REQUIRED for Supabase
         connect_args["ssl"] = True
+        
     elif is_supabase_direct:
         print(f"   Mode: Supabase Direct Connection")
         connect_args["ssl"] = True
     else:
-        # Generic PostgreSQL - try SSL but don't require it
         print(f"   Mode: Generic PostgreSQL")
-        # For other hosts, we can try SSL prefer mode
-        # asyncpg uses ssl=True for sslmode=require
-        connect_args["ssl"] = "prefer"
+        # Don't enforce SSL for generic PostgreSQL
     
-    # Reconstruct the URL with the correct scheme
-    # We need to properly encode special characters in password
-    from urllib.parse import quote
+    # URL-encode the password to handle special characters like [], @, #, etc.
     encoded_password = quote(password, safe="")
     
-    processed_url = f"{scheme}://{username}:{encoded_password}@{host}:{port}/{database}"
+    # Build the URL with asyncpg driver
+    processed_url = f"postgresql+asyncpg://{username}:{encoded_password}@{host}:{port}/{database}"
     
-    # Preserve query parameters (except sslmode which we handle via connect_args)
-    if parsed.query:
-        query_params = parse_qs(parsed.query)
-        # Remove sslmode as we handle it via connect_args
-        query_params.pop("sslmode", None)
-        if query_params:
-            query_string = "&".join(f"{k}={v[0]}" for k, v in query_params.items())
-            processed_url = f"{processed_url}?{query_string}"
+    print(f"   Pooling: {'Disabled (external pooler)' if is_supabase_pooler else 'SQLAlchemy default'}")
     
     return processed_url, connect_args
 
 
 # Prepare the database URL
-database_url, connect_args = prepare_database_url(settings.database_url)
+try:
+    database_url, connect_args = prepare_database_url(settings.database_url)
+except Exception as e:
+    print(f"❌ Error parsing DATABASE_URL: {e}")
+    print(f"   Raw URL starts with: {settings.database_url[:30] if settings.database_url else '(empty)'}...")
+    raise
 
 # Determine if we should use NullPool (required for external connection poolers)
 is_using_pooler = "pooler.supabase.com" in settings.database_url if settings.database_url else False
@@ -120,9 +122,6 @@ if connect_args:
 if is_using_pooler:
     # Use NullPool when external pooler handles connection management
     engine_kwargs["poolclass"] = NullPool
-    print("   Pooling: Disabled (using external pooler)")
-else:
-    print("   Pooling: SQLAlchemy default")
 
 # Create async engine
 engine = create_async_engine(database_url, **engine_kwargs)
