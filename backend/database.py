@@ -22,12 +22,25 @@ if database_url and database_url.startswith("postgres://"):
 elif database_url and database_url.startswith("postgresql://"):
     database_url = database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
 
-# Create async engine
-engine = create_async_engine(
-    database_url,
-    echo=settings.debug,
-    future=True
-)
+# Determine if using connection pooler (Supabase pooler uses port 5432 or 6543 with pooler subdomain)
+is_using_pooler = "pooler.supabase.com" in database_url if database_url else False
+
+# Create async engine with appropriate settings
+# When using Supabase's connection pooler, we need to disable prepared statements
+# to avoid compatibility issues with PgBouncer/Supavisor
+from sqlalchemy.pool import NullPool
+
+engine_kwargs = {
+    "echo": settings.debug,
+    "future": True,
+}
+
+if is_using_pooler:
+    # Disable prepared statement cache for connection pooler compatibility
+    engine_kwargs["connect_args"] = {"prepared_statement_cache_size": 0}
+    engine_kwargs["poolclass"] = NullPool
+
+engine = create_async_engine(database_url, **engine_kwargs)
 
 # Create async session factory
 AsyncSessionLocal = async_sessionmaker(
