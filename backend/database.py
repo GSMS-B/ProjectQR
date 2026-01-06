@@ -78,12 +78,23 @@ def prepare_database_url(raw_url: str) -> tuple[str, dict]:
         
         # Connection pooler requires NullPool and no prepared statements
         connect_args["prepared_statement_cache_size"] = 0
-        # SSL is REQUIRED for Supabase
-        connect_args["ssl"] = True
+        
+        # SSL is REQUIRED for Supabase, but we need to skip certificate verification
+        # because the pooler uses certificates not in standard trust stores
+        import ssl
+        ssl_context = ssl.create_default_context()
+        ssl_context.check_hostname = False
+        ssl_context.verify_mode = ssl.CERT_NONE
+        connect_args["ssl"] = ssl_context
+        print(f"   SSL: Enabled (no cert verification)")
         
     elif is_supabase_direct:
         print(f"   Mode: Supabase Direct Connection")
-        connect_args["ssl"] = True
+        import ssl
+        ssl_context = ssl.create_default_context()
+        ssl_context.check_hostname = False
+        ssl_context.verify_mode = ssl.CERT_NONE
+        connect_args["ssl"] = ssl_context
     else:
         print(f"   Mode: Generic PostgreSQL")
         # Don't enforce SSL for generic PostgreSQL
