@@ -31,3 +31,6 @@ bcrypt
 
 # Date/Time utilities
 python-dateutil
+
+# Geolocation
+geoip2

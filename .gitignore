@@ -39,6 +39,7 @@ env/
 # Generated files
 qr_codes/
 data/
+!backend/data/GeoLite2-City.mmdb
 *.db
 
 # Logs

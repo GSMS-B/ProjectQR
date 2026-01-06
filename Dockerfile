@@ -34,4 +34,5 @@ EXPOSE 7860
 WORKDIR /app/backend
 
 # Run the application
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "7860"]
+# Run the application
+CMD ["python", "main.py"]
