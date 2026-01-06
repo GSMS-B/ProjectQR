@@ -14,9 +14,17 @@ from config import get_settings
 # Get settings
 settings = get_settings()
 
+# Fix database URL for Render/PostgreSQL
+# Render provides postgres:// or postgresql:// but we need postgresql+asyncpg://
+database_url = settings.database_url
+if database_url and database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql+asyncpg://", 1)
+elif database_url and database_url.startswith("postgresql://"):
+    database_url = database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+
 # Create async engine
 engine = create_async_engine(
-    settings.database_url,
+    database_url,
     echo=settings.debug,
     future=True
 )
