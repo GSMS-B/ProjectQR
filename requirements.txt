@@ -1,0 +1,33 @@
+# FastAPI and Server
+fastapi
+uvicorn
+python-multipart
+
+# Database
+sqlalchemy
+aiosqlite
+
+# QR Code Generation
+qrcode
+Pillow
+
+# Security & Validation
+python-dotenv
+pydantic
+pydantic-settings
+email-validator
+
+# HTTP Requests
+requests
+httpx
+
+# User Agent Parsing
+user-agents
+
+# JWT for auth tokens
+python-jose
+passlib
+bcrypt
+
+# Date/Time utilities
+python-dateutil
