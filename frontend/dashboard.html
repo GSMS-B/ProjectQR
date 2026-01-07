@@ -148,6 +148,12 @@
             }
 
             .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 260px;
+                z-index: 1000;
                 transform: translateX(-100%);
                 transition: transform 0.3s ease;
             }
@@ -158,6 +164,50 @@
 
             .main-content {
                 margin-left: 0 !important;
+                padding: 70px 16px 20px !important;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .page-header .btn-primary {
+                width: 100%;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 12px;
+            }
+
+            .stat-value {
+                font-size: 1.5rem !important;
+            }
+
+            .stat-label {
+                font-size: 0.65rem !important;
+            }
+
+            .qr-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            table {
+                font-size: 0.7rem;
+            }
+
+            table th,
+            table td {
+                padding: 8px 4px !important;
+            }
+
+            .chart-container {
+                padding: 12px;
             }
         }
     </style>

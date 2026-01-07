@@ -42,9 +42,11 @@
             </ul>
 
             <div class="navbar-actions">
+                <a href="/login" class="btn btn-ghost navbar-login">LOG IN</a>
+
                 <!-- Dark Mode Toggle -->
-                <button class="btn btn-ghost" id="themeToggle" onclick="toggleTheme()"
-                    style="padding: 8px; min-width: auto;" title="Toggle Dark Mode">
+                <button class="btn btn-ghost theme-toggle" id="themeToggle" onclick="toggleTheme()"
+                    title="Toggle Dark Mode">
                     <svg id="sunIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="2" style="display: none;">
                         <circle cx="12" cy="12" r="5"></circle>
@@ -63,7 +65,6 @@
                     </svg>
                 </button>
 
-                <a href="/login" class="btn btn-ghost">LOG IN</a>
                 <a href="/signup" class="btn btn-primary">
                     GET STARTED
                     <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -72,14 +73,6 @@
                     </svg>
                 </a>
             </div>
-
-            <button class="navbar-mobile-toggle" id="mobileMenuToggle">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
-            </button>
         </div>
     </nav>
 

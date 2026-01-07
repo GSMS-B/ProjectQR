@@ -973,20 +973,34 @@ body.dashboard-page {
     }
 
     .navbar-mobile-toggle {
-        display: block;
+        display: none;
     }
 
     .navbar-actions {
-        gap: 8px;
+        gap: 6px;
     }
 
     .navbar-actions .btn {
-        padding: 8px 12px;
-        font-size: 0.7rem;
+        padding: 8px 10px;
+        font-size: 0.65rem;
     }
 
-    .navbar-actions .btn-ghost {
+    .navbar-actions .btn-primary {
+        padding: 8px 12px;
+    }
+
+    .navbar-actions .btn-primary .arrow {
         display: none;
+    }
+
+    .navbar-login {
+        display: block !important;
+    }
+
+    .theme-toggle {
+        display: flex !important;
+        padding: 6px !important;
+        min-width: auto;
     }
 
     /* Hero Mobile */
