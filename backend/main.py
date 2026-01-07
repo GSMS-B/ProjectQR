@@ -97,6 +97,14 @@ if os.path.exists(os.path.join(frontend_dir, "css")):
 if os.path.exists(os.path.join(frontend_dir, "js")):
     app.mount("/js", StaticFiles(directory=os.path.join(frontend_dir, "js")), name="js")
 
+# Serve favicon
+@app.get("/favicon.png", tags=["Static"])
+async def get_favicon():
+    favicon_path = os.path.join(frontend_dir, "favicon.png")
+    if os.path.exists(favicon_path):
+        return FileResponse(favicon_path, media_type="image/png")
+    raise HTTPException(status_code=404, detail="Favicon not found")
+
 
 # Import and include routers
 from routes.auth import router as auth_router

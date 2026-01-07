@@ -966,6 +966,8 @@ body.dashboard-page {
 }
 
 @media (max-width: 768px) {
+
+    /* Navbar Mobile */
     .navbar-nav {
         display: none;
     }
@@ -974,8 +976,33 @@ body.dashboard-page {
         display: block;
     }
 
+    .navbar-actions {
+        gap: 8px;
+    }
+
+    .navbar-actions .btn {
+        padding: 8px 12px;
+        font-size: 0.7rem;
+    }
+
+    .navbar-actions .btn-ghost {
+        display: none;
+    }
+
+    /* Hero Mobile */
     .hero {
-        padding-top: 100px;
+        padding: 100px 16px 60px;
+        min-height: auto;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+        line-height: 1.2;
+    }
+
+    .hero-description {
+        font-size: 0.95rem;
+        padding: 0 10px;
     }
 
     .hero-labels {
@@ -983,6 +1010,7 @@ body.dashboard-page {
         gap: var(--space-md);
     }
 
+    /* Features Mobile */
     .features-grid,
     .steps-grid {
         grid-template-columns: 1fr;
@@ -992,10 +1020,17 @@ body.dashboard-page {
         display: none;
     }
 
+    /* Stats Mobile */
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
     }
 
+    .stat-value {
+        font-size: 1.5rem;
+    }
+
+    /* Footer Mobile */
     .footer-grid {
         grid-template-columns: 1fr;
     }
@@ -1006,11 +1041,105 @@ body.dashboard-page {
         text-align: center;
     }
 
+    /* Dashboard Sidebar Mobile - Slide In/Out */
     .sidebar {
-        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 260px;
+        z-index: 1000;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
     }
 
     .main-content {
-        margin-left: 0;
+        margin-left: 0 !important;
+        padding: 80px 16px 20px !important;
+    }
+
+    /* Dashboard Header Mobile */
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .page-header .btn-primary {
+        width: 100%;
+    }
+
+    /* Dashboard Stats Grid Mobile */
+    .stats-overview {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px;
+    }
+
+    .stat-card {
+        padding: 16px;
+    }
+
+    /* QR Cards Grid Mobile */
+    .qr-cards-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Create QR Form Mobile */
+    .create-qr-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Recent QR Table Mobile */
+    table {
+        font-size: 0.75rem;
+    }
+
+    table th,
+    table td {
+        padding: 8px 4px !important;
+    }
+
+    /* Analytics Charts Mobile */
+    .chart-container canvas {
+        max-height: 200px;
+    }
+
+    /* Modal Mobile */
+    .modal {
+        width: 95%;
+        max-width: none;
+        margin: 20px;
+    }
+
+    /* Auth Pages Mobile */
+    .auth-card {
+        padding: 30px 20px;
+        margin: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    /* Extra small screens */
+    .navbar-logo span {
+        font-size: 1rem;
+    }
+
+    .hero-title {
+        font-size: 1.75rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-lg {
+        padding: 16px 24px;
+        font-size: 0.875rem;
+        width: 100%;
     }
 }
