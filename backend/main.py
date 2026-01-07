@@ -87,8 +87,8 @@ qr_codes_dir = os.path.join(os.path.dirname(__file__), "qr_codes")
 os.makedirs(frontend_dir, exist_ok=True)
 os.makedirs(qr_codes_dir, exist_ok=True)
 
-# Mount QR codes directory
-app.mount("/qr_codes", StaticFiles(directory=qr_codes_dir), name="qr_codes")
+# NOTE: QR codes are served via dynamic endpoint /qr_codes/{short_code}.png (below)
+# This allows auto-regeneration of missing QR codes due to ephemeral filesystem on Render
 
 # Mount frontend static files (CSS, JS)
 if os.path.exists(os.path.join(frontend_dir, "css")):
@@ -139,6 +139,51 @@ async def api_info():
             "docs": "/docs"
         }
     }
+
+
+# Dynamic QR code image serving with auto-regeneration
+from sqlalchemy import select
+from database import SessionLocal
+from models import URL
+from services.qr_generator import generate_qr_code, get_qr_image_path
+
+@app.get("/qr_codes/{filename}", tags=["QR Images"])
+async def serve_qr_image(filename: str):
+    """
+    Serve QR code images. Regenerates if missing (handles ephemeral filesystem on Render).
+    """
+    # Extract short_code from filename (e.g., "abc123.png" -> "abc123")
+    if not filename.endswith(".png"):
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail="File not found")
+    
+    short_code = filename[:-4]  # Remove ".png"
+    
+    # Check if file exists
+    qr_path = get_qr_image_path(short_code)
+    
+    if qr_path and os.path.exists(qr_path):
+        return FileResponse(qr_path, media_type="image/png")
+    
+    # File doesn't exist - regenerate from database
+    async with SessionLocal() as db:
+        result = await db.execute(select(URL).filter(URL.short_code == short_code))
+        url = result.scalar_one_or_none()
+        
+        if not url:
+            from fastapi import HTTPException
+            raise HTTPException(status_code=404, detail="QR code not found")
+        
+        # Regenerate QR code
+        qr_url = f"{settings.app_url}/{short_code}"
+        qr_path = generate_qr_code(
+            url=qr_url,
+            short_code=short_code,
+            fill_color=url.qr_color,
+            back_color=url.qr_background
+        )
+        
+        return FileResponse(qr_path, media_type="image/png")
 
 
 # Serve frontend pages

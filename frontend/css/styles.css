@@ -369,7 +369,7 @@ a:hover {
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 100px var(--space-lg) 60px;
+    padding: 140px var(--space-lg) 80px;
 }
 
 .hero-title {
