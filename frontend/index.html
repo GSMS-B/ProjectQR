@@ -1,416 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QRSecure - Smart QR Codes with Analytics & Security</title>
-    <meta name="description" content="Create dynamic QR codes with real-time analytics, security validation, and the ability to update destinations without reprinting.">
-    
+    <meta name="description"
+        content="Create dynamic QR codes with real-time analytics, security validation, and the ability to update destinations without reprinting.">
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
     <!-- Styles -->
     <link rel="stylesheet" href="/css/styles.css">
-    
-    <style>
-        /* Landing page specific styles */
-        .hero-demo {
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 500px;
-            z-index: 1;
-        }
-        
-        .demo-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 32px;
-            backdrop-filter: blur(20px);
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-        
-        .demo-qr {
-            width: 180px;
-            height: 180px;
-            background: white;
-            border-radius: 16px;
-            margin: 0 auto 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 100px;
-        }
-        
-        .demo-stats {
-            display: flex;
-            justify-content: space-around;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .demo-stat {
-            text-align: center;
-        }
-        
-        .demo-stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #667eea;
-        }
-        
-        .demo-stat-label {
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.5);
-        }
-        
-        .quick-create {
-            max-width: 600px;
-            margin: -60px auto 0;
-            padding: 0 24px;
-            position: relative;
-            z-index: 10;
-        }
-        
-        .quick-create-card {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 20px;
-            padding: 32px;
-            backdrop-filter: blur(30px);
-        }
-        
-        .quick-create-form {
-            display: flex;
-            gap: 12px;
-        }
-        
-        .quick-create-form .form-input {
-            flex: 1;
-        }
-        
-        .section-header {
-            text-align: center;
-            max-width: 600px;
-            margin: 0 auto var(--space-2xl);
-        }
-        
-        .section-title {
-            margin-bottom: var(--space-md);
-        }
-        
-        .how-it-works {
-            background: rgba(255, 255, 255, 0.02);
-        }
-        
-        .steps-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 40px;
-            position: relative;
-        }
-        
-        .steps-grid::before {
-            content: '';
-            position: absolute;
-            top: 40px;
-            left: 15%;
-            right: 15%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--primary), transparent);
-        }
-        
-        .step {
-            text-align: center;
-            position: relative;
-        }
-        
-        .step-number {
-            width: 80px;
-            height: 80px;
-            background: var(--gradient-primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            font-weight: 800;
-            margin: 0 auto 24px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .step-title {
-            font-size: 1.25rem;
-            margin-bottom: 8px;
-        }
-        
-        .step-description {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-        
-        .cta-section {
-            text-align: center;
-            padding: 100px 0;
-        }
-        
-        .cta-title {
-            font-size: 3rem;
-            margin-bottom: 24px;
-        }
-        
-        footer {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 60px 0 30px;
-            border-top: 1px solid var(--border);
-        }
-        
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 2fr repeat(3, 1fr);
-            gap: 60px;
-            margin-bottom: 40px;
-        }
-        
-        .footer-brand p {
-            margin-top: 16px;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-        
-        .footer-title {
-            font-size: 0.875rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 20px;
-            color: var(--text-secondary);
-        }
-        
-        .footer-links {
-            list-style: none;
-        }
-        
-        .footer-links li {
-            margin-bottom: 12px;
-        }
-        
-        .footer-links a {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-        
-        .footer-links a:hover {
-            color: var(--text-primary);
-        }
-        
-        .footer-bottom {
-            padding-top: 30px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: var(--text-muted);
-            font-size: 0.875rem;
-        }
-        
-        @media (max-width: 1024px) {
-            .hero-demo {
-                display: none;
-            }
-            
-            .steps-grid {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
-            
-            .steps-grid::before {
-                display: none;
-            }
-            
-            .footer-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .quick-create-form {
-                flex-direction: column;
-            }
-            
-            .footer-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .footer-bottom {
-                flex-direction: column;
-                gap: 16px;
-                text-align: center;
-            }
-        }
-    </style>
 </head>
+
 <body>
     <!-- Navbar -->
     <nav class="navbar">
         <div class="navbar-container">
             <a href="/" class="navbar-logo">
-                🔒 <span>QRSecure</span>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <span>QRSecure</span>
             </a>
-            
+
             <ul class="navbar-nav">
-                <li><a href="#features" class="navbar-link">Features</a></li>
-                <li><a href="#how-it-works" class="navbar-link">How it Works</a></li>
-                <li><a href="/docs" class="navbar-link">API Docs</a></li>
+                <li><a href="#features" class="navbar-link">FEATURES</a></li>
+                <li><a href="#how-it-works" class="navbar-link">HOW IT WORKS</a></li>
+                <li><a href="/docs" class="navbar-link">API DOCS</a></li>
             </ul>
-            
+
             <div class="navbar-actions">
-                <a href="/login" class="btn btn-ghost">Log In</a>
-                <a href="/signup" class="btn btn-primary">Get Started</a>
+                <a href="/login" class="btn btn-ghost">LOG IN</a>
+                <a href="/signup" class="btn btn-primary">
+                    GET STARTED
+                    <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                </a>
             </div>
+
+            <button class="navbar-mobile-toggle" id="mobileMenuToggle">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-badge">
-                    <span class="hero-badge-dot"></span>
-                    <span>Now with Google Safe Browsing Protection</span>
-                </div>
-                
-                <h1 class="hero-title">
-                    Smart QR Codes<br>
-                    <span class="hero-title-gradient">That Work Smarter</span>
-                </h1>
-                
-                <p class="hero-description">
-                    Create dynamic QR codes with real-time analytics, security validation, 
-                    and the power to update destinations without reprinting.
-                </p>
-                
-                <div class="hero-actions">
-                    <a href="/signup" class="btn btn-primary btn-lg">Create Free QR Code</a>
-                    <a href="#how-it-works" class="btn btn-secondary btn-lg">Learn More</a>
-                </div>
+        <h1 class="hero-title">
+            <span>SMART</span>
+            <span>QR</span>
+            <span>CODES</span>
+            <span>FOR</span>
+            <span>MODERN</span>
+            <span>BUSINESS</span>
+        </h1>
+
+        <p class="hero-description">
+            Create dynamic QR codes with real-time analytics, security validation,
+            and the power to update destinations without reprinting.
+        </p>
+
+        <div class="hero-labels">
+            <div class="hero-label">
+                <svg class="label-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <polygon
+                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
+                <span>Real-Time Analytics</span>
             </div>
-            
-            <div class="hero-demo">
-                <div class="demo-card">
-                    <div class="demo-qr">📱</div>
-                    <div class="demo-stats">
-                        <div class="demo-stat">
-                            <div class="demo-stat-value">1,247</div>
-                            <div class="demo-stat-label">Total Scans</div>
-                        </div>
-                        <div class="demo-stat">
-                            <div class="demo-stat-value">42</div>
-                            <div class="demo-stat-label">Today</div>
-                        </div>
-                        <div class="demo-stat">
-                            <div class="demo-stat-value">12</div>
-                            <div class="demo-stat-label">Countries</div>
-                        </div>
-                    </div>
-                </div>
+            <div class="hero-label">
+                <svg class="label-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M12 22V8M5 12H2a10 10 0 0 0 20 0h-3" />
+                    <circle cx="12" cy="5" r="3" />
+                </svg>
+                <span>Dynamic URLs</span>
             </div>
+            <div class="hero-label">
+                <svg class="label-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+                <span>Security Validation</span>
+            </div>
+        </div>
+
+        <div class="hero-actions">
+            <a href="/signup" class="btn btn-primary btn-lg">
+                GET STARTED
+                <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+            </a>
         </div>
     </section>
 
-    <!-- Quick Create -->
-    <div class="quick-create">
-        <div class="quick-create-card">
-            <form class="quick-create-form" id="quickCreateForm">
-                <input type="url" class="form-input" placeholder="Enter your URL (e.g., https://example.com)" required id="quickUrl">
-                <button type="submit" class="btn btn-primary">Generate QR</button>
-            </form>
-        </div>
-    </div>
-
     <!-- Features Section -->
-    <section class="section" id="features">
+    <section class="features-section" id="features">
         <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Everything You Need</h2>
-                <p>Powerful features to help you create, manage, and track your QR codes like never before.</p>
-            </div>
-            
+            <h2 class="features-title">Unlock the Power of QR</h2>
+
             <div class="features-grid">
-                <div class="card">
-                    <div class="feature-icon">📊</div>
-                    <h3 class="feature-title">Real-Time Analytics</h3>
-                    <p class="feature-description">Track every scan with detailed insights including location, device type, browser, and time patterns.</p>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="12" y1="20" x2="12" y2="10" />
+                            <line x1="18" y1="20" x2="18" y2="4" />
+                            <line x1="6" y1="20" x2="6" y2="16" />
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Advanced Analytics</h3>
+                    <p class="feature-description">
+                        Track every scan with detailed insights including location,
+                        device type, browser, and time patterns.
+                    </p>
                 </div>
-                
-                <div class="card">
-                    <div class="feature-icon">🔄</div>
-                    <h3 class="feature-title">Dynamic URLs</h3>
-                    <p class="feature-description">Update your destination URL anytime without regenerating the QR code. Perfect for campaigns and promotions.</p>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Dynamic Updates</h3>
+                    <p class="feature-description">
+                        Update your destination URL anytime without regenerating
+                        the QR code. Perfect for campaigns.
+                    </p>
                 </div>
-                
-                <div class="card">
-                    <div class="feature-icon">🛡️</div>
-                    <h3 class="feature-title">Security First</h3>
-                    <p class="feature-description">Every link is checked against Google Safe Browsing, SSL validation, and domain age verification.</p>
-                </div>
-                
-                <div class="card">
-                    <div class="feature-icon">👁️</div>
-                    <h3 class="feature-title">Preview Pages</h3>
-                    <p class="feature-description">Users see a branded preview before redirecting, with security badges and trust indicators.</p>
-                </div>
-                
-                <div class="card">
-                    <div class="feature-icon">🎨</div>
-                    <h3 class="feature-title">Customization</h3>
-                    <p class="feature-description">Brand your QR codes with custom colors and embed your logo for instant recognition.</p>
-                </div>
-                
-                <div class="card">
-                    <div class="feature-icon">📱</div>
-                    <h3 class="feature-title">Mobile Optimized</h3>
-                    <p class="feature-description">All pages and QR codes are optimized for mobile scanning and display.</p>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">Real-time Insights</h3>
+                    <p class="feature-description">
+                        Make informed decisions faster with our real-time
+                        data processing capabilities.
+                    </p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- How It Works -->
-    <section class="section how-it-works" id="how-it-works">
+    <section class="how-it-works" id="how-it-works">
         <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">How It Works</h2>
-                <p>Create powerful QR codes in three simple steps.</p>
-            </div>
-            
+            <h2 class="features-title">How It Works</h2>
+
             <div class="steps-grid">
                 <div class="step">
                     <div class="step-number">1</div>
                     <h3 class="step-title">Enter Your URL</h3>
-                    <p class="step-description">Paste any URL you want to share. We'll validate it for security and generate a unique short link.</p>
+                    <p class="step-description">
+                        Paste any URL you want to share. We validate it for security
+                        and generate a unique short link.
+                    </p>
                 </div>
-                
+
                 <div class="step">
                     <div class="step-number">2</div>
                     <h3 class="step-title">Get Your QR Code</h3>
-                    <p class="step-description">Download your QR code in high resolution. Customize colors and add your logo if needed.</p>
+                    <p class="step-description">
+                        Download your QR code in high resolution. Customize colors
+                        and add your logo if needed.
+                    </p>
                 </div>
-                
+
                 <div class="step">
                     <div class="step-number">3</div>
                     <h3 class="step-title">Track & Update</h3>
-                    <p class="step-description">Monitor scans in real-time. Update the destination anytime without reprinting.</p>
+                    <p class="step-description">
+                        Monitor scans in real-time. Update the destination
+                        anytime without reprinting.
+                    </p>
                 </div>
             </div>
         </div>
@@ -444,24 +231,38 @@
     <section class="cta-section">
         <div class="container">
             <h2 class="cta-title">Ready to Get Started?</h2>
-            <p style="color: var(--text-secondary); margin-bottom: 32px; font-size: 1.125rem;">
+            <p class="cta-description">
                 Create your first smart QR code for free. No credit card required.
             </p>
-            <a href="/signup" class="btn btn-primary btn-lg">Create Free Account</a>
+            <a href="/signup" class="btn btn-primary btn-lg">
+                CREATE FREE ACCOUNT
+                <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+            </a>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer>
+    <footer class="footer">
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <div class="navbar-logo" style="font-size: 1.75rem;">
-                        🔒 <span>QRSecure</span>
-                    </div>
-                    <p>Smart QR codes for modern businesses. Track, update, and secure your links with powerful analytics.</p>
+                    <a href="/" class="navbar-logo" style="font-size: 1.25rem;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <span>QRSecure</span>
+                    </a>
+                    <p>
+                        Smart QR codes for modern businesses. Track, update,
+                        and secure your links with powerful analytics.
+                    </p>
                 </div>
-                
+
                 <div>
                     <h4 class="footer-title">Product</h4>
                     <ul class="footer-links">
@@ -470,7 +271,7 @@
                         <li><a href="#">Pricing</a></li>
                     </ul>
                 </div>
-                
+
                 <div>
                     <h4 class="footer-title">Company</h4>
                     <ul class="footer-links">
@@ -479,7 +280,7 @@
                         <li><a href="#">Contact</a></li>
                     </ul>
                 </div>
-                
+
                 <div>
                     <h4 class="footer-title">Legal</h4>
                     <ul class="footer-links">
@@ -488,50 +289,82 @@
                     </ul>
                 </div>
             </div>
-            
+
             <div class="footer-bottom">
                 <p>&copy; 2026 QRSecure. All rights reserved.</p>
-                <p>Made with ❤️ for secure QR codes</p>
+                <p>Made with precision for secure QR codes</p>
             </div>
         </div>
     </footer>
 
     <script>
-        // Quick create form
-        document.getElementById('quickCreateForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const url = document.getElementById('quickUrl').value;
-            
-            try {
-                const response = await fetch('/api/qr/create', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ url: url })
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    // Redirect to dashboard or show QR
-                    window.location.href = '/dashboard?code=' + data.short_code;
-                } else {
-                    alert(data.detail || 'Error creating QR code');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error creating QR code. Please try again.');
-            }
-        });
-        
         // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
             });
+        });
+
+        // Mobile menu toggle
+        const mobileToggle = document.getElementById('mobileMenuToggle');
+        if (mobileToggle) {
+            mobileToggle.addEventListener('click', () => {
+                // Add mobile menu logic here
+                alert('Mobile menu coming soon!');
+            });
+        }
+
+        // Add stagger animation to hero title
+        document.addEventListener('DOMContentLoaded', () => {
+            const heroTitle = document.querySelector('.hero-title');
+            if (heroTitle) {
+                const spans = heroTitle.querySelectorAll('span');
+                spans.forEach((span, index) => {
+                    span.style.opacity = '0';
+                    span.style.transform = 'translateY(20px)';
+                    span.style.transition = 'all 0.6s ease';
+                    span.style.transitionDelay = `${index * 0.1}s`;
+
+                    setTimeout(() => {
+                        span.style.opacity = '1';
+                        span.style.transform = 'translateY(0)';
+                    }, 100);
+                });
+            }
+
+            // Animate hero labels
+            const labels = document.querySelectorAll('.hero-label');
+            labels.forEach((label, index) => {
+                label.style.opacity = '0';
+                label.style.transform = 'translateY(20px)';
+                label.style.transition = 'all 0.6s ease';
+                label.style.transitionDelay = `${0.8 + index * 0.15}s`;
+
+                setTimeout(() => {
+                    label.style.opacity = '1';
+                    label.style.transform = 'translateY(0)';
+                }, 100);
+            });
+
+            // Animate CTA button
+            const ctaBtn = document.querySelector('.hero-actions .btn');
+            if (ctaBtn) {
+                ctaBtn.style.opacity = '0';
+                ctaBtn.style.transform = 'translateY(20px)';
+                ctaBtn.style.transition = 'all 0.6s ease';
+                ctaBtn.style.transitionDelay = '1.2s';
+
+                setTimeout(() => {
+                    ctaBtn.style.opacity = '1';
+                    ctaBtn.style.transform = 'translateY(0)';
+                }, 100);
+            }
         });
     </script>
 </body>
+
 </html>
