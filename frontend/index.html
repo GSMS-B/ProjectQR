@@ -208,19 +208,19 @@
         <div class="container">
             <div class="stats-grid">
                 <div class="stat">
-                    <div class="stat-value">10K+</div>
+                    <div class="stat-value" id="statQrCodes">...</div>
                     <div class="stat-label">QR Codes Created</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value">500K+</div>
+                    <div class="stat-value" id="statTotalScans">...</div>
                     <div class="stat-label">Total Scans</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value">99.9%</div>
+                    <div class="stat-value" id="statUptime">99.9%</div>
                     <div class="stat-label">Uptime</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value">150+</div>
+                    <div class="stat-value" id="statCountries">...</div>
                     <div class="stat-label">Countries</div>
                 </div>
             </div>
@@ -363,7 +363,40 @@
                     ctaBtn.style.transform = 'translateY(0)';
                 }, 100);
             }
+
+            // Fetch and display real-time stats
+            fetchGlobalStats();
         });
+
+        async function fetchGlobalStats() {
+            try {
+                const response = await fetch('/api/analytics/global/stats');
+                if (response.ok) {
+                    const data = await response.json();
+
+                    // Format numbers nicely
+                    document.getElementById('statQrCodes').textContent = formatNumber(data.qr_codes_created);
+                    document.getElementById('statTotalScans').textContent = formatNumber(data.total_scans);
+                    document.getElementById('statCountries').textContent = data.unique_countries > 0 ? data.unique_countries + '+' : '0';
+                    document.getElementById('statUptime').textContent = data.uptime_percent + '%';
+                }
+            } catch (error) {
+                console.error('Error fetching stats:', error);
+                // Show 0 instead of ...
+                document.getElementById('statQrCodes').textContent = '0';
+                document.getElementById('statTotalScans').textContent = '0';
+                document.getElementById('statCountries').textContent = '0';
+            }
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M+';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(num >= 10000 ? 0 : 1) + 'K+';
+            }
+            return num.toString();
+        }
     </script>
 </body>
 

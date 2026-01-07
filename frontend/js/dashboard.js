@@ -31,6 +31,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadQrCodes();
     updateOverviewStats();
 
+    // Auto-refresh stats every 30 seconds for real-time updates
+    setInterval(async () => {
+        await loadQrCodes();
+        updateOverviewStats();
+    }, 30000);
+
     // Check URL params for redirect after create
     const params = new URLSearchParams(window.location.search);
     if (params.get('code')) {
@@ -198,8 +204,30 @@ function updateOverviewStats() {
     document.getElementById('totalQrCodes').textContent = qrCodes.length;
     document.getElementById('totalScans').textContent = qrCodes.reduce((sum, qr) => sum + qr.total_scans, 0);
     document.getElementById('activeQr').textContent = qrCodes.filter(qr => qr.is_active).length;
-    // Scans today would need API call, using placeholder
-    document.getElementById('scansToday').textContent = '-';
+
+    // Fetch scans today from API
+    fetchScansToday();
+}
+
+async function fetchScansToday() {
+    try {
+        const token = localStorage.getItem('qrsecure_token');
+        const response = await fetch('/api/analytics/user/scans-today', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            document.getElementById('scansToday').textContent = data.scans_today;
+        } else {
+            document.getElementById('scansToday').textContent = '0';
+        }
+    } catch (error) {
+        console.error('Error fetching scans today:', error);
+        document.getElementById('scansToday').textContent = '0';
+    }
 }
 
 // Forms
