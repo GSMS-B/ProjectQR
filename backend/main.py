@@ -143,7 +143,7 @@ async def api_info():
 
 # Dynamic QR code image serving with auto-regeneration
 from sqlalchemy import select
-from database import SessionLocal
+from database import AsyncSessionLocal
 from models import URL
 from services.qr_generator import generate_qr_code, get_qr_image_path
 
@@ -166,7 +166,7 @@ async def serve_qr_image(filename: str):
         return FileResponse(qr_path, media_type="image/png")
     
     # File doesn't exist - regenerate from database
-    async with SessionLocal() as db:
+    async with AsyncSessionLocal() as db:
         result = await db.execute(select(URL).filter(URL.short_code == short_code))
         url = result.scalar_one_or_none()
         
