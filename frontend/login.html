@@ -9,83 +9,23 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
     <!-- Styles -->
     <link rel="stylesheet" href="/css/styles.css">
-
-    <style>
-        .auth-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .auth-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 48px;
-            width: 100%;
-            max-width: 420px;
-            backdrop-filter: blur(20px);
-        }
-
-        .auth-logo {
-            text-align: center;
-            font-size: 2rem;
-            font-weight: 800;
-            margin-bottom: 32px;
-        }
-
-        .auth-logo span {
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .auth-title {
-            text-align: center;
-            font-size: 1.5rem;
-            margin-bottom: 8px;
-        }
-
-        .auth-subtitle {
-            text-align: center;
-            color: var(--text-muted);
-            margin-bottom: 32px;
-        }
-
-        .auth-footer {
-            text-align: center;
-            margin-top: 24px;
-            color: var(--text-muted);
-        }
-
-        .auth-footer a {
-            color: var(--primary);
-            font-weight: 500;
-        }
-
-        .error-message {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #ef4444;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: none;
-        }
-    </style>
 </head>
 
 <body>
     <div class="auth-container">
         <div class="auth-card">
             <div class="auth-logo">
-                🔒 <span>QRSecure</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <span>QRSecure</span>
             </div>
 
             <h1 class="auth-title">Welcome Back</h1>
@@ -95,17 +35,17 @@
 
             <form id="loginForm">
                 <div class="form-group">
-                    <label class="form-label">Email</label>
+                    <label class="form-label">EMAIL</label>
                     <input type="email" class="form-input" id="email" placeholder="you@example.com" required>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Password</label>
+                    <label class="form-label">PASSWORD</label>
                     <input type="password" class="form-input" id="password" placeholder="••••••••" required>
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;" id="submitBtn">
-                    Log In
+                    LOG IN
                 </button>
             </form>
 
@@ -160,7 +100,7 @@
                 errorDiv.textContent = 'Connection error. Please try again.';
                 errorDiv.style.display = 'block';
             } finally {
-                submitBtn.textContent = 'Log In';
+                submitBtn.textContent = 'LOG IN';
                 submitBtn.disabled = false;
             }
         });
