@@ -192,70 +192,84 @@
                     <h1 class="page-title">Create QR Code</h1>
                 </div>
 
-                <div class="card" style="max-width: 600px;">
-                    <form id="createQrForm">
-                        <div class="form-group">
-                            <label class="form-label">DESTINATION URL *</label>
-                            <input type="url" class="form-input" id="createUrl" placeholder="https://example.com"
-                                required>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">TITLE (OPTIONAL)</label>
-                            <input type="text" class="form-input" id="createTitle" placeholder="My Awesome Link">
-                        </div>
-
-                        <div class="form-group">
-                            <div class="form-checkbox-group">
-                                <input type="checkbox" class="form-checkbox" id="showPreview" checked>
-                                <label for="showPreview">Show preview page before redirect</label>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="form-checkbox-group">
-                                <input type="checkbox" class="form-checkbox" id="enableAnalytics" checked>
-                                <label for="enableAnalytics">Enable analytics tracking</label>
-                            </div>
-                        </div>
-
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start;">
+                    <div class="card">
+                        <form id="createQrForm">
                             <div class="form-group">
-                                <label class="form-label">QR COLOR</label>
-                                <input type="color" class="form-input" id="qrColor" value="#000000"
-                                    style="height: 50px; padding: 5px;">
+                                <label class="form-label">DESTINATION URL *</label>
+                                <input type="url" class="form-input" id="createUrl" placeholder="https://example.com"
+                                    required>
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">BACKGROUND COLOR</label>
-                                <input type="color" class="form-input" id="qrBgColor" value="#FFFFFF"
-                                    style="height: 50px; padding: 5px;">
+                                <label class="form-label">TITLE (OPTIONAL)</label>
+                                <input type="text" class="form-input" id="createTitle" placeholder="My Awesome Link">
                             </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label class="form-label">EXPIRATION (DAYS, OPTIONAL)</label>
-                            <input type="number" class="form-input" id="expirationDays"
-                                placeholder="Leave empty for no expiration" min="1" max="365">
-                        </div>
+                            <div class="form-group">
+                                <div class="form-checkbox-group">
+                                    <input type="checkbox" class="form-checkbox" id="showPreview" checked>
+                                    <label for="showPreview">Show preview page before redirect</label>
+                                </div>
+                            </div>
 
-                        <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
-                            GENERATE QR CODE
-                        </button>
-                    </form>
-                </div>
+                            <div class="form-group">
+                                <div class="form-checkbox-group">
+                                    <input type="checkbox" class="form-checkbox" id="enableAnalytics" checked>
+                                    <label for="enableAnalytics">Enable analytics tracking</label>
+                                </div>
+                            </div>
 
-                <!-- QR Code Result -->
-                <div id="qrResult" style="display: none; margin-top: 32px;">
-                    <div class="card" style="max-width: 600px; text-align: center;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                <div class="form-group">
+                                    <label class="form-label">QR COLOR</label>
+                                    <input type="color" class="form-input" id="qrColor" value="#000000"
+                                        style="height: 50px; padding: 5px;">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">BACKGROUND COLOR</label>
+                                    <input type="color" class="form-input" id="qrBgColor" value="#FFFFFF"
+                                        style="height: 50px; padding: 5px;">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">EXPIRATION (DAYS, OPTIONAL)</label>
+                                <input type="number" class="form-input" id="expirationDays"
+                                    placeholder="Leave empty for no expiration" min="1" max="365">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
+                                GENERATE QR CODE
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- QR Code Result -->
+                    <div id="qrResult" class="card" style="display: none; text-align: center;">
                         <h3 style="margin-bottom: 24px;">Your QR Code is Ready!</h3>
                         <img id="qrImage" src="" alt="QR Code"
                             style="width: 200px; height: 200px; margin: 0 auto 24px; display: block;">
-                        <p id="shortUrl" style="font-size: 1.25rem; color: var(--primary); margin-bottom: 24px;"></p>
+                        <p id="shortUrl"
+                            style="font-size: 1rem; color: var(--primary); margin-bottom: 24px; word-break: break-all;">
+                        </p>
                         <div style="display: flex; gap: 12px; justify-content: center;">
                             <a id="downloadBtn" href="" download class="btn btn-primary">DOWNLOAD PNG</a>
                             <button onclick="copyToClipboard()" class="btn btn-secondary">COPY URL</button>
                         </div>
+                    </div>
+
+                    <!-- Placeholder when no QR generated -->
+                    <div id="qrPlaceholder" class="card"
+                        style="text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px;">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#e5e5e5" stroke-width="1.5">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        <p style="color: var(--text-muted); margin-top: 16px;">Your QR code will appear here</p>
                     </div>
                 </div>
             </section>

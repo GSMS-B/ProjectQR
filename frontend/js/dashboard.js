@@ -245,8 +245,9 @@ async function handleCreateQr(e) {
         const data = await response.json();
 
         if (response.ok) {
-            // Show result
+            // Show result and hide placeholder
             document.getElementById('qrResult').style.display = 'block';
+            document.getElementById('qrPlaceholder').style.display = 'none';
             document.getElementById('qrImage').src = data.qr_image_url;
             document.getElementById('shortUrl').textContent = data.short_url;
             document.getElementById('downloadBtn').href = `/api/qr/${data.short_code}/download`;
@@ -384,8 +385,8 @@ function renderTimelineChart(timeline) {
             datasets: [{
                 label: 'Scans',
                 data: timeline.map(t => t.count),
-                borderColor: '#667eea',
-                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                borderColor: '#FF6B2C',
+                backgroundColor: 'rgba(255, 107, 44, 0.1)',
                 fill: true,
                 tension: 0.4
             }]
@@ -397,12 +398,12 @@ function renderTimelineChart(timeline) {
             },
             scales: {
                 x: {
-                    grid: { color: 'rgba(255,255,255,0.05)' },
-                    ticks: { color: 'rgba(255,255,255,0.5)' }
+                    grid: { color: 'rgba(0,0,0,0.05)' },
+                    ticks: { color: '#666666', font: { family: "'JetBrains Mono', monospace" } }
                 },
                 y: {
-                    grid: { color: 'rgba(255,255,255,0.05)' },
-                    ticks: { color: 'rgba(255,255,255,0.5)' },
+                    grid: { color: 'rgba(0,0,0,0.05)' },
+                    ticks: { color: '#666666', font: { family: "'JetBrains Mono', monospace" } },
                     beginAtZero: true
                 }
             }
@@ -426,7 +427,7 @@ function renderDevicesChart(devices) {
             labels: labels,
             datasets: [{
                 data: values,
-                backgroundColor: ['#667eea', '#764ba2', '#f093fb', '#10b981', '#f59e0b']
+                backgroundColor: ['#FF6B2C', '#1a1a1a', '#666666', '#10b981', '#f59e0b']
             }]
         },
         options: {
@@ -434,7 +435,10 @@ function renderDevicesChart(devices) {
             plugins: {
                 legend: {
                     position: 'bottom',
-                    labels: { color: 'rgba(255,255,255,0.7)' }
+                    labels: {
+                        color: '#666666',
+                        font: { family: "'JetBrains Mono', monospace" }
+                    }
                 }
             }
         }

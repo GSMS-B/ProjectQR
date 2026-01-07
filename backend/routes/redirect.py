@@ -125,7 +125,7 @@ async def preview_page(
     <title>Link Preview - QRSecure</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {{
             margin: 0;
@@ -134,21 +134,19 @@ async def preview_page(
         }}
         
         body {{
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'JetBrains Mono', monospace;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background: #ffffff;
             padding: 20px;
         }}
         
         .preview-container {{
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            padding: 40px;
-            border-radius: 24px;
-            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+            background: #ffffff;
+            border: 1px solid #e5e5e5;
+            padding: 48px;
             max-width: 480px;
             width: 100%;
             text-align: center;
@@ -167,50 +165,46 @@ async def preview_page(
         }}
         
         .lock-icon {{
-            font-size: 56px;
-            margin-bottom: 16px;
-            animation: pulse 2s infinite;
+            margin-bottom: 24px;
         }}
         
-        @keyframes pulse {{
-            0%, 100% {{ transform: scale(1); }}
-            50% {{ transform: scale(1.05); }}
+        .lock-icon svg {{
+            width: 48px;
+            height: 48px;
+            stroke: #1a1a1a;
         }}
         
         h2 {{
-            color: #1a1a2e;
-            font-size: 24px;
+            color: #1a1a1a;
+            font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }}
         
         .subtitle {{
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 20px;
+            color: #666666;
+            font-size: 0.875rem;
+            margin-bottom: 24px;
         }}
         
         .destination {{
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-size: 18px;
-            font-weight: 600;
-            margin: 16px 0;
-            word-break: break-all;
+            background: #fafafa;
+            border: 1px solid #e5e5e5;
             padding: 16px;
-            border-radius: 12px;
-            background-color: #f8f9fa;
-            -webkit-text-fill-color: initial;
-            color: #667eea;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #FF6B2C;
+            word-break: break-all;
+            margin-bottom: 24px;
         }}
         
         .security-badges {{
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin: 24px 0;
+            gap: 8px;
+            margin-bottom: 32px;
             text-align: left;
         }}
         
@@ -219,94 +213,104 @@ async def preview_page(
             align-items: center;
             gap: 12px;
             padding: 12px 16px;
-            border-radius: 10px;
-            font-size: 14px;
+            font-size: 0.875rem;
             font-weight: 500;
+            border-left: 3px solid;
         }}
         
         .badge-icon {{
-            font-size: 16px;
+            font-size: 14px;
         }}
         
         .badge.success {{
-            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-            color: #155724;
+            background: rgba(16, 185, 129, 0.1);
+            border-left-color: #10b981;
+            color: #065f46;
         }}
         
         .badge.warning {{
-            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-            color: #856404;
+            background: rgba(245, 158, 11, 0.1);
+            border-left-color: #f59e0b;
+            color: #92400e;
         }}
         
         .badge.danger {{
-            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
-            color: #721c24;
+            background: rgba(239, 68, 68, 0.1);
+            border-left-color: #ef4444;
+            color: #991b1b;
         }}
         
         .buttons {{
             display: flex;
             gap: 12px;
-            margin-top: 24px;
         }}
         
         .btn {{
             flex: 1;
             padding: 14px 24px;
-            font-size: 15px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
             border: none;
-            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
         }}
         
         .btn-primary {{
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #FF6B2C;
             color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }}
         
         .btn-primary:hover {{
+            background: #e55a1f;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
         }}
         
         .btn-secondary {{
-            background: #e9ecef;
-            color: #495057;
+            background: #ffffff;
+            color: #1a1a1a;
+            border: 1px solid #e5e5e5;
         }}
         
         .btn-secondary:hover {{
-            background: #dee2e6;
+            background: #fafafa;
         }}
         
         .countdown {{
-            color: #888;
-            font-size: 13px;
-            margin-top: 20px;
+            color: #999999;
+            font-size: 0.75rem;
+            margin-top: 24px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }}
         
         #seconds {{
             font-weight: 700;
-            color: #667eea;
+            color: #FF6B2C;
         }}
         
         .report-link {{
-            display: inline-block;
-            margin-top: 20px;
-            color: #999;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 24px;
+            color: #999999;
             text-decoration: none;
-            font-size: 13px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
             transition: color 0.3s;
         }}
         
         .report-link:hover {{
-            color: #dc3545;
+            color: #ef4444;
         }}
         
         @media (max-width: 480px) {{
             .preview-container {{
-                padding: 24px;
+                padding: 32px 24px;
             }}
             
             .buttons {{
@@ -317,7 +321,12 @@ async def preview_page(
 </head>
 <body>
     <div class="preview-container">
-        <div class="lock-icon">🔒</div>
+        <div class="lock-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+        </div>
         <h2>Link Preview</h2>
         <p class="subtitle">You're about to visit:</p>
         
@@ -349,7 +358,8 @@ async def preview_page(
         </div>
         
         <a href="/report/{short_code}" class="report-link">
-            🚩 Report suspicious link
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+            Report suspicious link
         </a>
     </div>
     

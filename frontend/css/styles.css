@@ -363,13 +363,13 @@ a:hover {
 
 /* ===== Hero Section ===== */
 .hero {
-    min-height: 100vh;
+    min-height: calc(100vh - 64px);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 120px var(--space-lg) var(--space-4xl);
+    padding: 100px var(--space-lg) 60px;
 }
 
 .hero-title {
