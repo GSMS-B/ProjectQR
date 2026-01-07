@@ -147,7 +147,13 @@ function renderQrCodesList() {
             <div class="qr-card-actions">
                 <button class="btn btn-sm btn-secondary" onclick="openEditModal('${qr.short_code}')">Edit</button>
                 <a href="${qr.qr_image_url}" download="qr_${qr.short_code}.png" class="btn btn-sm btn-secondary">Download</a>
-                <button class="btn btn-sm btn-ghost" onclick="viewAnalytics('${qr.short_code}')">📊</button>
+                <button class="btn btn-sm btn-secondary" onclick="viewAnalytics('${qr.short_code}')" style="display: flex; align-items: center; justify-content: center;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                    </svg>
+                </button>
             </div>
         </div>
     `).join('');
@@ -262,11 +268,11 @@ async function handleCreateQr(e) {
             // Reset form
             document.getElementById('createQrForm').reset();
         } else {
-            alert(data.detail || 'Error creating QR code');
+            showToast(data.detail || 'Error creating QR code', 'error');
         }
     } catch (error) {
         console.error('Create QR error:', error);
-        alert('Error creating QR code. Please try again.');
+        showToast('Error creating QR code. Please try again.', 'error');
     }
 }
 
@@ -298,14 +304,14 @@ async function handleEditQr(e) {
         if (response.ok) {
             closeEditModal();
             await loadQrCodes();
-            alert('QR code updated successfully!');
+            showToast('QR code updated successfully!', 'success');
         } else {
             const data = await response.json();
-            alert(data.detail || 'Error updating QR code');
+            showToast(data.detail || 'Error updating QR code', 'error');
         }
     } catch (error) {
         console.error('Edit QR error:', error);
-        alert('Error updating QR code. Please try again.');
+        showToast('Error updating QR code. Please try again.', 'error');
     }
 }
 
@@ -513,7 +519,49 @@ function copyToClipboard() {
     const qr = qrCodes.find(q => q.short_code === currentShortCode);
     if (qr) {
         navigator.clipboard.writeText(qr.short_url);
-        alert('URL copied to clipboard!');
+        showToast('URL copied to clipboard!', 'success');
+    }
+}
+
+// Toast Notification System
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+
+    const icons = {
+        success: '<svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>',
+        error: '<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>',
+        info: '<svg viewBox="0 0 24 24" fill="none" stroke="#FF6B2C" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>'
+    };
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `
+        <span class="toast-icon">${icons[type] || icons.info}</span>
+        <span class="toast-message">${message}</span>
+        <button class="toast-close" onclick="this.parentElement.remove()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+    `;
+
+    container.appendChild(toast);
+
+    // Auto remove after 4 seconds
+    setTimeout(() => {
+        if (toast.parentElement) {
+            toast.remove();
+        }
+    }, 4000);
+}
+
+// Mobile Sidebar Toggle
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+        sidebar.classList.toggle('open');
     }
 }
 
@@ -523,3 +571,5 @@ window.openEditModal = openEditModal;
 window.closeEditModal = closeEditModal;
 window.viewAnalytics = viewAnalytics;
 window.copyToClipboard = copyToClipboard;
+window.showToast = showToast;
+window.toggleSidebar = toggleSidebar;
