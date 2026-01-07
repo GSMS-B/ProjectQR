@@ -17,6 +17,12 @@
 </head>
 
 <body>
+    <script>
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark');
+        }
+    </script>
     <div class="auth-container">
         <div class="auth-card">
             <div class="auth-logo">

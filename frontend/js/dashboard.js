@@ -72,6 +72,43 @@ function showSection(sectionName) {
     if (sectionName === 'analytics') {
         populateAnalyticsDropdown();
     }
+
+    // Populate account section
+    if (sectionName === 'account') {
+        populateAccountSection();
+    }
+
+    // Close mobile sidebar after navigation
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) sidebar.classList.remove('open');
+}
+
+function populateAccountSection() {
+    // Get user email from JWT token
+    const token = localStorage.getItem('qrsecure_token');
+    if (token) {
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            // Email is stored in payload.email, not payload.sub (which is user_id)
+            document.getElementById('accountEmail').textContent = payload.email || 'User';
+        } catch (e) {
+            document.getElementById('accountEmail').textContent = 'User';
+        }
+    }
+
+    // Calculate stats from qrCodes array
+    document.getElementById('accountQrCount').textContent = qrCodes.length;
+    document.getElementById('accountTotalScans').textContent = qrCodes.reduce((sum, qr) => sum + qr.total_scans, 0);
+
+    // Member since - use earliest QR code creation date or show current year
+    if (qrCodes.length > 0) {
+        const earliest = qrCodes.reduce((min, qr) =>
+            new Date(qr.created_at) < new Date(min.created_at) ? qr : min
+        );
+        document.getElementById('accountCreated').textContent = formatDate(earliest.created_at);
+    } else {
+        document.getElementById('accountCreated').textContent = 'Today';
+    }
 }
 
 // API Helpers
