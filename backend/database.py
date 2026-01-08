@@ -68,6 +68,20 @@ def prepare_database_url(raw_url: str) -> tuple[str, dict]:
     is_supabase_pooler = "pooler.supabase.com" in host
     is_supabase_direct = "supabase.co" in host
     
+    # Detect Render PostgreSQL (uses pgbouncer)
+    is_render = "render.com" in host or "oregon-postgres.render.com" in host
+    
+    # Detect Neon (also uses pgbouncer)
+    is_neon = "neon.tech" in host
+    
+    # Any provider using pgbouncer needs statement cache disabled
+    uses_pgbouncer = is_supabase_pooler or is_render or is_neon
+    
+    if uses_pgbouncer:
+        # Connection pooler requires statement cache disabled
+        connect_args["prepared_statement_cache_size"] = 0
+        print(f"   ⚠️ PgBouncer detected - statement cache disabled")
+    
     if is_supabase_pooler:
         if port == 6543:
             print(f"   Mode: Supabase Transaction Pooler (port 6543)")
@@ -75,9 +89,6 @@ def prepare_database_url(raw_url: str) -> tuple[str, dict]:
             print(f"   Mode: Supabase Session Pooler (port 5432)")
         else:
             print(f"   Mode: Supabase Pooler (unknown port {port})")
-        
-        # Connection pooler requires NullPool and no prepared statements
-        connect_args["prepared_statement_cache_size"] = 0
         
         # SSL is REQUIRED for Supabase, but we need to skip certificate verification
         # because the pooler uses certificates not in standard trust stores
@@ -95,9 +106,21 @@ def prepare_database_url(raw_url: str) -> tuple[str, dict]:
         ssl_context.check_hostname = False
         ssl_context.verify_mode = ssl.CERT_NONE
         connect_args["ssl"] = ssl_context
+        
+    elif is_render:
+        print(f"   Mode: Render PostgreSQL")
+        # Render uses internal SSL but may not need explicit config
+        
+    elif is_neon:
+        print(f"   Mode: Neon PostgreSQL")
+        import ssl
+        ssl_context = ssl.create_default_context()
+        ssl_context.check_hostname = False
+        ssl_context.verify_mode = ssl.CERT_NONE
+        connect_args["ssl"] = ssl_context
+        
     else:
         print(f"   Mode: Generic PostgreSQL")
-        # Don't enforce SSL for generic PostgreSQL
     
     # URL-encode the password to handle special characters like [], @, #, etc.
     encoded_password = quote(password, safe="")
@@ -119,7 +142,7 @@ except Exception as e:
     raise
 
 # Determine if we should use NullPool (required for external connection poolers)
-is_using_pooler = "pooler.supabase.com" in settings.database_url if settings.database_url else False
+is_using_pooler = any(x in settings.database_url for x in ["pooler.supabase.com", "render.com", "neon.tech"]) if settings.database_url else False
 
 # Build engine kwargs
 engine_kwargs = {
