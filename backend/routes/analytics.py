@@ -48,21 +48,36 @@ async def get_global_stats(db: AsyncSession = Depends(get_db)):
 @router.get("/user/scans-today")
 async def get_user_scans_today(
     db: AsyncSession = Depends(get_db),
-    user: User = Depends(require_auth)
+    user: User = Depends(require_auth),
+    tz_offset: int = 0  # Client timezone offset in minutes (e.g., IST = -330)
 ):
     """
     Get total scans today for the current user's QR codes.
-    Uses US Pacific (Oregon) timezone for consistency with Render server.
+    Uses UTC midnight by default, can accept client timezone offset.
+    
+    Args:
+        tz_offset: Client timezone offset in minutes from UTC (negative for ahead of UTC)
+                   Example: IST (UTC+5:30) would be -330
     """
-    import pytz
+    from datetime import timezone as dt_timezone
     
-    # Use US Pacific timezone (Oregon where Render servers are)
-    pacific = pytz.timezone('US/Pacific')
-    now_pacific = datetime.now(pacific)
-    today_start = now_pacific.replace(hour=0, minute=0, second=0, microsecond=0)
+    # Calculate today's start in UTC
+    now_utc = datetime.now(dt_timezone.utc)
     
-    # Convert to UTC for database query
-    today_start_utc = today_start.astimezone(pytz.UTC).replace(tzinfo=None)
+    # If client provides timezone offset, adjust the "today" calculation
+    if tz_offset != 0:
+        # Client offset in hours
+        offset_hours = -tz_offset / 60  # Negative because JS returns negative for ahead
+        client_now = now_utc + timedelta(hours=offset_hours)
+        today_start = client_now.replace(hour=0, minute=0, second=0, microsecond=0)
+        # Convert back to UTC for query
+        today_start_utc = today_start - timedelta(hours=offset_hours)
+    else:
+        # Default: use UTC midnight
+        today_start_utc = now_utc.replace(hour=0, minute=0, second=0, microsecond=0)
+    
+    # Remove timezone info for database query
+    today_start_utc = today_start_utc.replace(tzinfo=None)
     
     # Get user's URL IDs
     urls_result = await db.execute(

@@ -249,7 +249,10 @@ function updateOverviewStats() {
 async function fetchScansToday() {
     try {
         const token = localStorage.getItem('qrsecure_token');
-        const response = await fetch('/api/analytics/user/scans-today', {
+        // Get client timezone offset in minutes (e.g., IST = -330)
+        const tzOffset = new Date().getTimezoneOffset();
+
+        const response = await fetch(`/api/analytics/user/scans-today?tz_offset=${tzOffset}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }

@@ -369,7 +369,7 @@ a:hover {
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 140px var(--space-lg) 80px;
+    padding: 180px var(--space-lg) 80px;
 }
 
 .hero-title {
@@ -1005,7 +1005,7 @@ body.dashboard-page {
 
     /* Hero Mobile */
     .hero {
-        padding: 100px 16px 60px;
+        padding: 130px 16px 60px;
         min-height: auto;
     }
 
