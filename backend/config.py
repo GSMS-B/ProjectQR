@@ -25,8 +25,12 @@ class Settings(BaseSettings):
     secret_key: str = Field(default="dev-secret-key-change-in-production", env="SECRET_KEY")
     debug: bool = Field(default=False, env="DEBUG")
     
-    # GeoLite2 Database
-    geolite2_db_path: str = Field(default="data/GeoLite2-City.mmdb", env="GEOLITE2_DB_PATH")
+    # GeoLite2 Database - use absolute path based on this file's location
+    _backend_dir: str = os.path.dirname(os.path.abspath(__file__))
+    geolite2_db_path: str = Field(
+        default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "GeoLite2-City.mmdb"),
+        env="GEOLITE2_DB_PATH"
+    )
     
     # Database (SQLite for local, can override with PostgreSQL)
     database_url: str = Field(
